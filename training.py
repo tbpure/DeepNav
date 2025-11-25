@@ -11,6 +11,8 @@ import os
 import time
 import tensorflow as tf
 
+from ResidualCnnGru import build_cnn_residual_gru_sequential
+
 print("tensorflow version = ", tf.__version__)
 
 from utils import retrieve_latest_weights
@@ -78,7 +80,7 @@ def start_training(session_data, model_architecture, train_ds, val_ds, signals_w
         Computes mean absolute error between labels and predictions, and weighs it
         such that signals with low values recieve high weights
         """
-        y_pred = ops.convert_to_tensor_v2(y_pred)
+        y_pred = ops.convert_to_tensor(y_pred)
         y_true = math_ops.cast(y_true, y_pred.dtype)
         return K.mean(math_ops.multiply(math_ops.abs(y_pred - y_true), signals_weights_tensor), axis=-1)
 
@@ -88,6 +90,7 @@ def start_training(session_data, model_architecture, train_ds, val_ds, signals_w
         # distributed model to use multiple GPUs in training
         with strategy.scope():  
             distributed_model = tf.keras.models.Sequential(model_architecture)
+            distributed_model = build_cnn_residual_gru_sequential()
             optimizer = tf.keras.optimizers.Adam(lr=session_data["learning_rate"])
 
             distributed_model.compile(loss=weighted_MAE,

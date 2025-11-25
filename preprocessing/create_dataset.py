@@ -114,6 +114,7 @@ def create_dataset(session_data, colum_names):
                 
                 # read flight data from csv to features and labels dataframes
                 csv_file_name = os.path.join(csvs_directory, flight_file)
+                # 这里去除了第一行以保证序列长度一致
                 features = pd.read_csv(csv_file_name, usecols=colum_names["features"]).to_numpy()[1:,:]
                 features_diff = pd.read_csv(csv_file_name, usecols=colum_names["features_diff"]).to_numpy()
                 labels = pd.read_csv(csv_file_name, usecols=colum_names["labels"]).to_numpy()
@@ -127,7 +128,9 @@ def create_dataset(session_data, colum_names):
                 
                 windowed_features = []
                 windowed_labels = []
-                
+                if labels.shape[0] - session_data["window_size"] <= 1:
+                    continue
+
                 # move a window w on the data, features are at i -> i+w & label is at i+w
                 for i in range (labels.shape[0] - session_data["window_size"]):
                     

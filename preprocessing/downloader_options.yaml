@@ -36,7 +36,7 @@ max_num: 1000
 overwrite: false
 
 # only download the database info file without downloading the logs themselves
-save_db_info_only: true
+save_db_info_only: false
 
 # use the local database info file without retrieving a new one
 # note that retrieving a new info file takes time, and the server

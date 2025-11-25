@@ -174,7 +174,8 @@ def evaluate_all_flights(model, train_flights_dict, val_flights_dict, trial_fold
             pdf_name = sorted_flights[i][0]
             old_name = os.path.join(old_name_base, pdf_name)
             new_name = os.path.join(worst_name_base, pdf_name)
-            os.rename(old_name, new_name)
+            if os.path.exists(old_name):
+                os.rename(old_name, new_name)
     
     return flights_summary
 
@@ -263,16 +264,16 @@ def summarize_session(trial_tree, model, session_data, flights_summary):
         session_data[set_name + "_mean_vel_error"] = mean_errors[2]
 
     # read the header of summary.csv
-    with open('summary.csv', 'r') as read_obj:
-        csv_reader = csv.reader(read_obj)
-        header = next(csv_reader)
-
-    #remove unnecessary session_data items
-    # session_data.pop("n_labels") 
-    session_data.pop("n_features") 
-    session_data.pop("initial_epoch") 
-    
-    # write session_data according to the header
-    with open('summary.csv', 'a+', newline='') as write_obj:
-        dict_writer = csv.DictWriter(write_obj, fieldnames=header)
-        dict_writer.writerow(session_data)
+    # with open('summary.csv', 'r') as read_obj:
+    #     csv_reader = csv.reader(read_obj)
+    #     header = next(csv_reader)
+    #
+    # #remove unnecessary session_data items
+    # # session_data.pop("n_labels")
+    # session_data.pop("n_features")
+    # session_data.pop("initial_epoch")
+    #
+    # # write session_data according to the header
+    # with open('summary.csv', 'a+', newline='') as write_obj:
+    #     dict_writer = csv.DictWriter(write_obj, fieldnames=header)
+    #     dict_writer.writerow(session_data)
